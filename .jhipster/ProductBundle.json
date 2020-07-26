@@ -1,0 +1,34 @@
+{
+  "name": "ProductBundle",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String",
+      "fieldValidateRules": [
+        "maxlength",
+        "required"
+      ],
+      "fieldValidateRulesMaxlength": "256"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "productBundleItem",
+      "otherEntityRelationshipName": "productBundle",
+      "relationshipName": "productBundleItems"
+    }
+  ],
+  "changelogDate": "20200726091517",
+  "entityTableName": "product_bundle",
+  "dto": "no",
+  "pagination": "pagination",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*",
+  "microserviceName": "product"
+}

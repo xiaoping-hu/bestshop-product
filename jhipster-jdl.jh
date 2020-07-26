@@ -1,0 +1,27 @@
+@service(serviceClass)
+entity Product{
+	title String maxlength(256) required,
+    description String,
+    price BigDecimal required,
+  	imageUrl String maxlength(256)
+}
+
+@service(serviceClass)
+entity ProductBundle{
+	name String maxlength(256) required,
+}
+
+@service(serviceClass)
+entity ProductBundleItem{
+	quantity Integer required,
+    discountAmount Integer required
+}
+
+relationship OneToMany{
+	ProductBundle{productBundleItems} to ProductBundleItem{productBundle}
+    Product{productBundleItems} to ProductBundleItem{product}
+}
+
+paginate Product, ProductBundle, ProductBundleItem with pagination
+
+

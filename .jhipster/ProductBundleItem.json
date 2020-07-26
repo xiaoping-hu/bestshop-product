@@ -1,0 +1,47 @@
+{
+  "name": "ProductBundleItem",
+  "fields": [
+    {
+      "fieldName": "quantity",
+      "fieldType": "Integer",
+      "fieldValidateRules": [
+        "required"
+      ]
+    },
+    {
+      "fieldName": "discountAmount",
+      "fieldType": "Integer",
+      "fieldValidateRules": [
+        "required"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "productBundle",
+      "otherEntityRelationshipName": "productBundleItems",
+      "relationshipName": "productBundle",
+      "otherEntityField": "id"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "product",
+      "otherEntityRelationshipName": "productBundleItems",
+      "relationshipName": "product",
+      "otherEntityField": "id"
+    }
+  ],
+  "changelogDate": "20200726091617",
+  "entityTableName": "product_bundle_item",
+  "dto": "no",
+  "pagination": "pagination",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*",
+  "microserviceName": "product"
+}

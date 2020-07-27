@@ -112,6 +112,18 @@ public class ProductBundleResource {
     }
 
     /**
+     * {@code GET  /products/{productId}/product-bundles} : Query all product bundles contains given product.
+     *
+     * @param productId the id of the product
+     * @return the list of productBundles in body with status {@code 200 (OK)}
+     */
+    @GetMapping("/products/{productId}/product-bundles")
+    public List<ProductBundle> getProductBundleByProduct(@PathVariable Long productId) {
+        log.debug("REST request to get ProductBundle by given product : {}", productId);
+        return  productBundleService.findProductBundlesByProduct(productId);
+    }
+
+    /**
      * {@code DELETE  /product-bundles/:id} : delete the "id" productBundle.
      *
      * @param id the id of the productBundle to delete.

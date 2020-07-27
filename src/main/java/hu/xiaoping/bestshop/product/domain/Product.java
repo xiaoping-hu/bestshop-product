@@ -31,7 +31,7 @@ public class Product implements Serializable {
     @Column(name = "title", length = 256, nullable = false)
     private String title;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition="clob")
     private String description;
 
     @NotNull
@@ -42,7 +42,7 @@ public class Product implements Serializable {
     @Column(name = "image_url", length = 256)
     private String imageUrl;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<ProductBundleItem> productBundleItems = new HashSet<>();
 

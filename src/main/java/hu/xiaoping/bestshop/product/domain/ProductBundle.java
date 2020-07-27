@@ -30,7 +30,7 @@ public class ProductBundle implements Serializable {
     @Column(name = "name", length = 256, nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "productBundle")
+    @OneToMany(mappedBy = "productBundle", fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<ProductBundleItem> productBundleItems = new HashSet<>();
 

@@ -2,10 +2,14 @@ package hu.xiaoping.bestshop.product.web.rest;
 
 import hu.xiaoping.bestshop.product.ProductApp;
 import hu.xiaoping.bestshop.product.config.SecurityBeanOverrideConfiguration;
+import hu.xiaoping.bestshop.product.domain.Product;
 import hu.xiaoping.bestshop.product.domain.ProductBundle;
+import hu.xiaoping.bestshop.product.domain.ProductBundleItem;
 import hu.xiaoping.bestshop.product.repository.ProductBundleRepository;
+import hu.xiaoping.bestshop.product.service.ProductBundleItemService;
 import hu.xiaoping.bestshop.product.service.ProductBundleService;
 
+import hu.xiaoping.bestshop.product.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +20,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,6 +36,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @WithMockUser
 public class ProductBundleResourceIT {
+    private static final String DEFAULT_TITLE = "AAAAAAAAAA";
+
+    private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
+
+    private static final BigDecimal DEFAULT_PRICE = new BigDecimal(1);
+
+    private static final String DEFAULT_IMAGE_URL = "AAAAAAAAAA";
 
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
@@ -40,6 +52,12 @@ public class ProductBundleResourceIT {
 
     @Autowired
     private ProductBundleService productBundleService;
+
+    @Autowired
+    private ProductService productService;
+
+    @Autowired
+    private ProductBundleItemService productBundleItemService;
 
     @Autowired
     private EntityManager em;
@@ -60,6 +78,8 @@ public class ProductBundleResourceIT {
             .name(DEFAULT_NAME);
         return productBundle;
     }
+
+
     /**
      * Create an updated entity for this test.
      *
@@ -146,7 +166,7 @@ public class ProductBundleResourceIT {
             .andExpect(jsonPath("$.[*].id").value(hasItem(productBundle.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)));
     }
-    
+
     @Test
     @Transactional
     public void getProductBundle() throws Exception {
@@ -227,5 +247,50 @@ public class ProductBundleResourceIT {
         // Validate the database contains one less item
         List<ProductBundle> productBundleList = productBundleRepository.findAll();
         assertThat(productBundleList).hasSize(databaseSizeBeforeDelete - 1);
+    }
+
+    /**
+     * Create a product for this test.
+     *
+     * This is a static method, as tests for other entities might also need it,
+     * if they test an entity which requires the current entity.
+     */
+    public static Product createProduct() {
+        Product product = new Product()
+            .title(DEFAULT_TITLE)
+            .description(DEFAULT_DESCRIPTION)
+            .price(DEFAULT_PRICE)
+            .imageUrl(DEFAULT_IMAGE_URL);
+        return product;
+    }
+
+    /**
+     * Create a product bundle item for this test.
+     *
+     * This is a static method, as tests for other entities might also need it,
+     * if they test an entity which requires the current entity.
+     */
+    public static ProductBundleItem createProductBundleItem(Product product, ProductBundle productBundle) {
+        ProductBundleItem productBundleItem = new ProductBundleItem()
+            .quantity(1)
+            .discountAmount(1).product(product).productBundle(productBundle);
+        return productBundleItem;
+    }
+
+    @Test
+    @Transactional
+    public void getProductBundlesByProduct() throws Exception {
+        // Initialize the database
+        productBundle = productBundleRepository.saveAndFlush(productBundle);
+
+        Product product = productService.save(createProduct());
+
+        ProductBundleItem productBundleItem = productBundleItemService.save(createProductBundleItem(product, productBundle));
+
+        // Get all the productBundleList
+        restProductBundleMockMvc.perform(get("/api/products/{productId}/product-bundles", product.getId()))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(productBundle.getId().intValue())));
     }
 }

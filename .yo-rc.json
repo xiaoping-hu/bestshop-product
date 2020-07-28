@@ -37,6 +37,9 @@
     "languages": ["en"],
     "blueprints": [],
     "skipClient": true,
-    "skipUserManagement": true
+    "skipUserManagement": true,
+    "herokuAppName": "bestshop-product",
+    "herokuDeployType": "git",
+    "herokuJavaVersion": "11"
   }
 }
